@@ -32,3 +32,6 @@ A simple, full-stack real-time chat application that allows users to create chat
 ```bash
 git clone https://github.com/your-username/chatapp.git
 cd chatapp
+cd backend
+npm install
+npm run dev
