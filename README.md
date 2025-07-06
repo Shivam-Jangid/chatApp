@@ -1,37 +1,35 @@
-# 🧠 ChatApp – Real-Time Room-Based Chat Application
+# 🧠 ChatApp – Real-Time Chat Rooms
 
-A simple, full-stack real-time chat application that allows users to create chat rooms and communicate instantly.
+![TypeScript](https://img.shields.io/badge/TypeScript-4.9+-3178C6?logo=typescript)
+![React](https://img.shields.io/badge/React-18+-61DAFB?logo=react)
+![WebSocket](https://img.shields.io/badge/WebSocket-RealTime-010101?logo=socket.io)
+![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js)
 
----
-
-## 📁 Project Structure
-
-
----
+A full-stack TypeScript application featuring WebSocket-powered real-time chat rooms with a React frontend.
 
 ## ✨ Features
 
-- Room-based chat functionality
-- Real-time messaging using WebSockets
-- Clean and responsive UI
-- Built with TypeScript end-to-end
+- 🏠 **Room-based chat** - Create and join chat rooms instantly
+- ⚡ **Real-time messaging** - Powered by WebSocket technology
+- 🛡️ **Type-safe code** - TypeScript on both frontend and backend
+- 📱 **Responsive UI** - Works seamlessly across all devices
+- 🔄 **Instant updates** - No page reloads needed
 
----
-
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
+- Node.js v18+
+- npm v9+ or yarn
+- Git
 
-- Node.js (v18+ recommended)
-- npm or yarn
-
----
-
-### 1. Clone the Repository
-
+### Installation
 ```bash
+# Clone the repository
 git clone https://github.com/your-username/chatapp.git
 cd chatapp
-cd backend
-npm install
-npm run dev
+
+# Install backend dependencies
+cd backend && npm install
+
+# Install frontend dependencies
+cd ../frontend && npm install
