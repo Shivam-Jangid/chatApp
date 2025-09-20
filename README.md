@@ -1,4 +1,4 @@
-# 🧠 ChatApp – Real-Time Chat Rooms
+# ChatApp – Real-Time Chat Rooms
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-4.9+-3178C6?logo=typescript)
 ![React](https://img.shields.io/badge/React-18+-61DAFB?logo=react)
