@@ -13,7 +13,6 @@ export const authMiddleware = async (req:AuthRequest, res:Response, next:NextFun
             return res.status(401).json({message: 'No token, authorization denied'});
         }
         const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-        console.log(decoded);
         if(!decoded){
             return res.status(401).json({message: 'Token is not valid'});
         }
