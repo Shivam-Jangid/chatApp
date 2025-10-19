@@ -1,0 +1,109 @@
+import BlurText from "@/components/ui/blurtext";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "@/store/useAuthstore";
+import { useState } from "react";
+import { signupSchema } from "@/lib/schema";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+export default function SignupPage() {
+  const [showPass, setshowPass] = useState(false);
+  // const {isSigningup, signup} = useAuthStore();
+
+  const form = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof signupSchema>) {
+    console.log(values);
+  }
+  return (
+    <div className="min-h-screen grid lg:grid-cols-2">
+      <div className="flex flex-col items-center justify-center p-6 sm:p-30 gap-10">
+        <div className="space-y-9 w-full">
+        <div className="flex flex-col items-center justify-center gap-5">
+          <div className="flex gap-3 items-center justify-center w-full">
+            <BlurText
+              text="Create Account"
+              delay={150}
+              animateBy="words"
+              direction="bottom"
+              className="text-4xl font-bold"
+            />
+          </div>
+          <div className="text-center text-md max-w-sm">Start your free journey today on the best chat app around!</div>
+        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex flex-col gap-2">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-md">Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-md">Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="email@gmail.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-md">Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="Password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-full">
+            <Button variant = "default" className=" w-full py-6 rounded-xl cursor-pointer font-semibold text-lg" size="lg" type="submit">  
+                  Create an Account
+            </Button>
+            </div>
+          </form>
+        </Form>
+        </div>
+      </div>
+    </div>
+  );
+}
