@@ -8,6 +8,7 @@ import SettingsPage from "./pages/SettingsPage";
 import { useEffect } from "react";
 import { useAuthStore } from "./store/useAuthstore";
 import Hyperspeed from "./components/Hyperspeed";
+import { Toaster } from "react-hot-toast";
 
 
 function App() {
@@ -75,6 +76,7 @@ function App() {
         <Route element={authuser ? <ProfilePage />: <Navigate to = "/signin" />} path="/profile" />
         <Route element={<SettingsPage />} path="/settings" />
       </Routes>
+      <Toaster />
     </div>
   );
 }
