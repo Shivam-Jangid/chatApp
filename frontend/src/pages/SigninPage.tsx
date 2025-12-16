@@ -15,8 +15,9 @@ import { useState } from "react";
 import { signinSchema } from "@/lib/schema";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {Eye, EyeOff, Lock, Mail, User} from "lucide-react";
+import {Eye, EyeOff, Lock, Mail} from "lucide-react";
 import { Link } from "react-router-dom";
+import Particles from "@/components/particles";
 
 export default function SignupPage() {
   const [showPass, setshowPass] = useState(false);
@@ -34,8 +35,20 @@ export default function SignupPage() {
     await signin(values);
   }
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
-      <div className="flex flex-col items-center justify-center p-8 sm:p-30 gap-10">
+    <div className="h-screen flex items-center w-screen">
+      <div className="absolute w-full h-full -z-10">
+          <Particles
+            particleColors={['#ffffff', '#ffffff']}
+            particleCount={200}
+            particleSpread={10}
+            speed={0.1}
+            particleBaseSize={100}
+            moveParticlesOnHover={true}
+            alphaParticles={false}
+            disableRotation={false}
+          />
+        </div>
+      <div className="flex flex-col mx-auto items-center max-w-4xl justify-center p-8 sm:p-30 gap-10">
         <div className="space-y-9 w-full">
         <div className="flex flex-col items-center justify-center gap-5">
           <div className="flex gap-3 items-center justify-center w-full">

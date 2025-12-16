@@ -70,6 +70,7 @@ function App() {
     <div>
       <Navbar />
       <Routes>
+        <Route element = {<Navigate to =  "/" />} path="*" />
         <Route element={authuser ? <Home/>: <Navigate to = "/signin" />} path="/" />
         <Route element={authuser ? <Navigate to = "/" />:<SignupPage />} path="/signup" />
         <Route element={authuser ? <Navigate to = "/" />:<SigninPage />} path="/signin" />

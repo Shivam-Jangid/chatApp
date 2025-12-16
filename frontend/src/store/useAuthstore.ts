@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 
 interface AuthStore {
     ischeackingAuth: boolean;
-    authuser: null | {username:string, email:string}; 
+    authuser: null | {username:string, email:string,_id:string, createdAt:string, updatedAt:string}; 
     isSigningup: boolean;
     isSigningin: boolean;
     isLoggingOut: boolean;
@@ -30,9 +30,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try{
         const response = await axiosInstance.get('/auth/check');
         const responseData = response.data;
-        const {email, username, message} = responseData;
-        console.log(message);
-        set({authuser:{email, username}});
+        set({authuser: responseData.user});
     }
     catch(err){
         set({authuser:null})
@@ -46,7 +44,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try{
       const response = await axiosInstance.post('/auth/signup', data);
       const responseData = response.data;
-      set({authuser : {email: responseData.email, username: responseData.username}});
+      const {username, email, _id, createdAt, updatedAt} = responseData;
+      set({authuser: {username, email, _id, createdAt, updatedAt}});
       toast.success(responseData.message);
     }
     catch(err: unknown){
@@ -78,7 +77,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try{
       const response = await axiosInstance.post('/auth/signin', data);
       const responseData = response.data;
-      set({authuser : {email: responseData.email, username: responseData.username}});
+      const {responseUser} = responseData;
+      set({authuser: responseUser});
       toast.success(responseData.message);
     }
     catch(err: unknown){
