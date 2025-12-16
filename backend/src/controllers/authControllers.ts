@@ -27,7 +27,7 @@ async function signup (req:Request,res:Response){
         if(newUser){
              await newUser.save();
              generateJWTs(newUser._id, res);
-            res.status(200).json({message: 'User created successfully', email, username});
+            res.status(200).json({message: 'User created successfully', email, username, createdAt:newUser.createdAt, updatedAt:newUser.updatedAt, _id:newUser._id});
         } else {
             res.status(400).json({message: 'Failed to create user'});
         }
@@ -61,7 +61,14 @@ async function signin (req:Request,res:Response){
             return res.status(400).json({message: 'Invalid credentials'});
         }
         generateJWTs(user._id, res);
-        res.status(200).json({message: 'User signed in successfully', email: user.email, username: user.username,userId: user._id});     
+        const responseUser = {
+            username: user.username,
+            email: user.email,
+            _id: user._id,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+        }
+        res.status(200).json({message: 'User signed in successfully', responseUser});     
     }
     catch(error){
         res.status(500).json({message: 'Internal server error', error});
@@ -69,7 +76,9 @@ async function signin (req:Request,res:Response){
 }          
 async function checkAuth (req:Request,res:Response){
    try{
-    res.status(200).json({user: (req as any).user});
+
+    const user = (req as any).user;
+    res.status(200).json({user});
    }
     catch(error){
         res.status(500).json({message: 'Internal server error at controller', error});
