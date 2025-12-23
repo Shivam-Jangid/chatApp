@@ -5,6 +5,31 @@ interface reqBody extends Request {
     user?:any
 }
 
+function formatDateTime(date: Date) {
+    const day = date.getDate();
+    const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 
+                       'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const monthName = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    
+    const minutesStr = minutes.toString().padStart(2, '0');
+
+
+    const dateTimeObj = {
+        date:`${day} ${monthName} ${year}`,
+        time:`${hours}:${minutesStr} ${ampm}`
+    }
+
+    return dateTimeObj;
+}
+
 
 async function getMessages(req: reqBody, res: Response) {  
     try{
@@ -16,10 +41,10 @@ async function getMessages(req: reqBody, res: Response) {
                 {senderId:sendersId, receiverId:Recieversid},
                 {senderId:Recieversid, receiverId:sendersId}
             ]
-          });
+          }).lean();
 
-
-          res.status(200).json({allMessages:messages}); 
+          const formattedMessage = messages.map((mes) => ({...mes,date:formatDateTime(mes.createdAt).date,time:formatDateTime(mes.createdAt).time}));
+          res.status(200).json({allMessages:formattedMessage}); 
         
     }
     catch(error){

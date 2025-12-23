@@ -7,10 +7,9 @@ export default function Home() {
   const { selectedUser } = useChatStore();
   return (
     <div className="pt-25 mx-10 h-screen">
-      <div className="bg-card/60 text-card-foreground flex h-full">
+      <div className=" text-card-foreground flex h-full">
         <Sidebar />
         {selectedUser?<Chatselected />:<NochatSelected />}
-
       </div>
     </div>
   );

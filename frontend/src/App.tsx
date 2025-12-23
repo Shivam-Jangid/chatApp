@@ -18,7 +18,6 @@ function App() {
     cheackAuth();
   }, [cheackAuth]);
 
-  console.log(authuser);
 
   if (ischeackingAuth && !authuser) {
     return (

@@ -16,6 +16,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.1.14",
     "@types/axios": "^0.9.36",
+    "@types/ws": "^8.18.1",
     "axios": "^1.12.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -32,6 +33,7 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.14",
     "three": "^0.180.0",
+    "ws": "^8.18.3",
     "zod": "^4.1.12",
     "zustand": "^5.0.8"
   },

@@ -5,10 +5,13 @@ import { connectDB } from './lib/db';
 import cookieParser from 'cookie-parser';
 import messageRoutes from './routes/messageRoutes';
 import cors from "cors";
+import { setupWebSocketServer } from './lib/ws';
+
+
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3000;
 
+const PORT = process.env.PORT || 3000;
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true,  
@@ -20,7 +23,11 @@ app.use('/api/auth', authRoutes);
 
 app.use('/api/messages', messageRoutes);
 
-app.listen(PORT, () => {
+
+const server = app.listen(PORT, () => {
  connectDB();
+ console.log("--port: ", PORT);
 }
 );
+
+setupWebSocketServer(server);

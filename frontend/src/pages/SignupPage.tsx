@@ -33,7 +33,6 @@ export default function SignupPage() {
   });
 
   async function onSubmit(values: z.infer<typeof signupSchema>) {
-    console.log(values);
     await signup(values);
   }
   return (

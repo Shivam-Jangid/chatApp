@@ -10,7 +10,6 @@ export default function ProfilePage() {
     let createdDate = new Date(authuser.createdAt);
     newDate = createdDate.toDateString();
   }
-  console.log(authuser)
   return (
     <div className="w-screen h-screen flex justify-center items-cemter">
        <SpotlightCard className="w-xl h-1/2 my-auto" spotlightColor="rgba(238, 240, 249, 0.2)">

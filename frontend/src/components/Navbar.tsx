@@ -11,7 +11,8 @@ export default function Navbar() {
     await logout();
   }
   return (
-    <header className="bg-card/10 z-10 backdrop-blur-3xl fixed flex w-full justify-between items-center py-5 md:px-7">     
+    <div className="w-full flex justify-center">
+    <header className="bg-background/10 border border-foreground/20 lg:w-4xl w-sm md:w-xl  rounded-xl z-10  backdrop-blur-4xl fixed flex my-2 justify-between items-center px-2 py-5 md:px-7">     
     <div className="flex items-center gap-2">
       <div className="bg-foreground/60 text-background p-1 rounded-md">
       <MessageSquare className="size-5 opacity-80"/>
@@ -26,5 +27,6 @@ export default function Navbar() {
         </div>}
     </div>
     </header>
+    </div>
   )
 }
