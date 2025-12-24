@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import { axiosInstance } from '../lib/axios';
 import { toast } from 'react-hot-toast';
+import { useChatStore } from './useChatstore';
 
 const BASE_URL_WS = 'ws://localhost:3000';
 
@@ -111,12 +112,17 @@ export const useAuthStore = create<AuthStore>((set,get) => ({
     ws.onclose = () => set({ socket: null });
     ws.onopen = () => console.log('socket connected with url: ', ws.url);
 
-    ws.onmessage = (e)=>{
-      console.log('message is being recieved');
-      const jsonData = JSON.parse(e.data);
-      if(jsonData.type == 'info'){
-        console.log(jsonData.onlineusers);
-        set({onlineUsers:jsonData.onlineusers})
+    ws.onmessage = (e) => {
+      try {
+        const jsonData = JSON.parse(e.data);
+        if (jsonData.type === 'info') {
+          set({ onlineUsers: jsonData.onlineusers });
+        } 
+        else if (jsonData.type === 'message') {
+          useChatStore.getState().addIncomingMessage(jsonData.data);
+        }
+      } catch (error) {
+        console.error('WebSocket message parsing error:', error);
       }
     }
     

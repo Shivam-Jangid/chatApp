@@ -751,6 +751,7 @@ class Road {
 
   createPlane(side: number, width: number, isRoad: boolean) {
     const options = this.options;
+    console.log(width);
     const segments = 100;
     const geometry = new THREE.PlaneGeometry(
       isRoad ? options.roadWidth : options.islandWidth,

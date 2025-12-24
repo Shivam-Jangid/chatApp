@@ -67,25 +67,46 @@ async function getusers(req: reqBody, res: Response) {
 }
 
 async function sendMessage (req:reqBody,res: Response) {
-    try{
-        const senderId = req.params.id;
-        const receiverId = req.user.id;
-        const text = req.body.text;
-        const newMessage = await message.create({
-            senderId,
-            receiverId,
-            text
-        });
-        const reciverSocket = idMap.get(receiverId);
-        if(reciverSocket){
-            const sendingJson = {
-                type:"message",
-                message:text
-            }
-            reciverSocket.send(JSON.stringify(sendingJson));
-        }
-        res.status(200).json({message:'Message sent successfully', newMessage});
+  try {
+    const receiverId = req.params.id;
+    const senderId = req.user.id;
+    const text = req.body.text;
+    
+    const newMessage = await message.create({
+      senderId,
+      receiverId,
+      text
+    });
+
+    const receiverSocket = idMap.get(receiverId);
+    if (receiverSocket) {
+      const formattedMessage = {
+        _id: newMessage._id.toString(),
+        senderId: newMessage.senderId.toString(),
+        receiverId: newMessage.receiverId.toString(),
+        text: newMessage.text,
+        createdAt: newMessage.createdAt,
+        updatedAt: newMessage.updatedAt,
+        date: formatDateTime(newMessage.createdAt).date,
+        time: formatDateTime(newMessage.createdAt).time
+      };
+
+      receiverSocket.send(JSON.stringify({
+        type: "message",
+        data: formattedMessage 
+      }));
     }
+    const formattedResponse = {
+      ...newMessage.toObject(),
+      date: formatDateTime(newMessage.createdAt).date,
+      time: formatDateTime(newMessage.createdAt).time
+    };
+
+    res.status(200).json({ 
+      message: 'Message sent successfully', 
+      newMessage: formattedResponse 
+    });
+  } 
     catch(error){
         res.status(500).json({message: 'Internal server error at sendMessageController', error});
     }

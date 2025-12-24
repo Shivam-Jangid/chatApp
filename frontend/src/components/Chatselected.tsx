@@ -1,20 +1,26 @@
 import { useChatStore } from "@/store/useChatstore";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
 import { useAuthStore } from "@/store/useAuthstore";
 
 export default function Chatselected() {
-  const { messages, getMessages, isMessagesLoading,subscribing,unsubscribing, selectedUser } =
+  const { messages, getMessages, isMessagesLoading, selectedUser } =
     useChatStore();
   const { authuser } = useAuthStore();
+
+  const messageEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (selectedUser && getMessages)
        getMessages(selectedUser._id);
-    subscribing();
-    return () => unsubscribing();
-  }, [getMessages, selectedUser,subscribing,unsubscribing]);
+  }, [getMessages, selectedUser]);
+
+  useEffect(() =>{
+    if(messageEndRef.current && messages){
+      messageEndRef.current.scrollIntoView({behavior: "smooth" });
+    }
+  }, [messages])
   
   if (isMessagesLoading) {
     return (
@@ -45,38 +51,44 @@ export default function Chatselected() {
   return (
     <div className="h-full px-3 flex flex-col pb-4 w-full">
       <ChatHeader selectedUser={selectedUser} />
-
       <div className="space-y-3 flex-1 pb-3 overflow-auto">
-        {messages.map((message) => <div key={message._id} className="flex justify-between">
-              {message.senderId == authuser?._id && selectedUser?._id == message.receiverId ? (
-                <div className="lg:w-1/4 max-w-1/2  bg-blue-600 text-white rounded-2xl rounded-bl-none px-3 py-1  shadow-md">
-                  <div className="flex items-center justify-start mb-2 text-[10px] opacity-90">
-                    <span className="">{message.date}</span>
-                  </div>
-                  <p className=" text-sm ">{message.text}</p>
-                  <div className="flex items-center justify-start mt-2 text-[10px] opacity-90">
-                    <span className="">{message.time}</span>
-                  </div>
-                </div>
-              ) : (
-                <div></div>
-              )}
-              {message.senderId == selectedUser?._id ? (
-                <div className="bg-gray-300 max-w-1/2  lg:w-1/4 text-gray-800 rounded-2xl rounded-br-none px-3 py-1 shadow-sm">
-                  <div className="flex items-center mb-2 justify-end text-[10px] text-gray-500">
-                    {message.date}
-                  </div>
-                  <p className="text-sm">{message.text}</p>
-                  <div className="flex items-center mt-2 justify-end text-[10px] text-gray-500">
-                    {message.time}
-                  </div>
-                </div>
-              ) : (
-                <div></div>
-              )}
-            </div>
-            )}
+  {messages.map((msg) => {
+    const isOwnMessage = msg.senderId === authuser?._id;
+    const isRelevant = selectedUser && (
+      (isOwnMessage && msg.receiverId === selectedUser._id) ||
+      (!isOwnMessage && msg.senderId === selectedUser._id)
+    );
+
+    if (!isRelevant) return null;
+
+    return (
+      <div 
+        key={msg._id} 
+        className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
+        ref = {messageEndRef}
+      >
+        <div className={`max-w-[75%] rounded-2xl px-4 py-2 mb-1 ${
+          isOwnMessage 
+            ? 'bg-blue-600 text-white rounded-bl-none' 
+            : 'bg-gray-200 text-gray-800 rounded-br-none'
+        }`}>
+          <div className={`text-[10px] mb-1 ${
+            isOwnMessage ? 'text-blue-100 text-left' : 'text-gray-500 text-right'
+          }`}>
+            {msg.date}
+          </div>
+          <p className="text-sm break-words">{msg.text}</p>
+          <div className={`text-[10px] mt-1 ${
+            isOwnMessage ? 'text-blue-100 text-left' : 'text-gray-500 text-right'
+          }`}>
+            {msg.time}
+          </div>
+        </div>
       </div>
+    );
+  })}
+</div>
+          
 
       <ChatInput />
     </div>

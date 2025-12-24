@@ -2,6 +2,7 @@ import { axiosInstance } from "@/lib/axios";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import { useAuthStore } from "./useAuthstore";
+import { formatDateTime } from "@/lib/utils";
 
 export interface userType {
     _id: string;
@@ -50,9 +51,8 @@ interface chatStoreProps {
         createdAt: string;
         updatedAt: string;
     }) => void;
-    subscribing: () => void;
-    unsubscribing: ()=> void;
     sendMessage: (text:messageData) => void;
+    addIncomingMessage: (message: any) => void;
 }
 
 export const useChatStore = create<chatStoreProps>((set,get) => ({
@@ -94,37 +94,56 @@ export const useChatStore = create<chatStoreProps>((set,get) => ({
     },
 
 
-    sendMessage: async(textObj: messageData) => {
-        const {selectedUser, messages} = get();
-        try{
-            const res = await axiosInstance.post(`/messages/send/${selectedUser?._id}`,textObj);
-            set({messages:[...messages,res.data]});
-        }
-        catch(err){
-            toast.error("Error occured while sending the message, wait and send later");
-            console.log(err);
-        }
-    },
-    subscribing: function(){
-        const {selectedUser} = get();
-        if(!selectedUser) return;
+    sendMessage: async (textObj: messageData) => {
+  const { selectedUser, messages } = get();
+  const { authuser } = useAuthStore.getState();
+  
+  if (!selectedUser || !authuser) return;
+  
+  const tempId = `temp-${Date.now()}`;
+  const tempMessage = {
+    _id: tempId,
+    senderId: authuser._id,
+    receiverId: selectedUser._id,
+    text: textObj.text,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    date: formatDateTime(new Date()).date,
+    time: formatDateTime(new Date()).time,
+    __isTemporary: true
+  };
 
-        const socket = useAuthStore.getState().socket;
+  set({ messages: [...messages, tempMessage] });
 
-        if(socket){
-            socket.onmessage = function(e){
-                const jsonParsed = JSON.parse(e.data);
-                if(jsonParsed.type == "message"){
-                    const newMessage = jsonParsed.message;
-                    set({messages: [...get().messages, newMessage]}) 
-                }
-            }
-        }
-    },
-    unsubscribing: function(){
-        // const socket = useAuthStore.getState().socket;
-        // if(socket){
-
-        // }
+  try {
+    const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, textObj);
+    
+    // Replace temp message with real one
+    set(state => ({
+      messages: state.messages.map(msg => 
+        msg._id === tempId 
+          ? { ...res.data.newMessage, __isTemporary: false }
+          : msg
+      )
+    }));
+  } catch (err) {
+    set(state => ({
+      messages: state.messages.filter(msg => msg._id !== tempId)
+    }));
+    toast.error("Failed to send message. Please try again.");
+  }
+},
+    addIncomingMessage: (newMessage) => {
+    const { messages, selectedUser } = get();
+    const { authuser } = useAuthStore.getState();
+    
+    if (selectedUser && (
+      (newMessage.senderId === authuser?._id && newMessage.receiverId === selectedUser._id) ||
+      (newMessage.senderId === selectedUser._id && newMessage.receiverId === authuser?._id)
+    )) {
+      if (!messages.some(msg => msg._id === newMessage._id)) {
+        set({ messages: [...messages, newMessage] });
+      }
     }
+  },
 }));
