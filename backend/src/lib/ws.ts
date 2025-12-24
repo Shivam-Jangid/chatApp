@@ -3,7 +3,7 @@ import http from "http";
 import {URL} from "url";
 
 
-const idMap = new Map<string, WebSocket>();
+export const idMap = new Map<string, WebSocket>();
 const replaced_sockets = new Set<WebSocket>();
 const onLineUsers = new Set<string>();
 
@@ -40,6 +40,11 @@ export const setupWebSocketServer = (server:http.Server) =>{
             console.log('no id present');
             return;
         };
+
+        socket.on('message', (data) =>{
+            const jsonData = JSON.parse(data.toString());
+
+        })
 
 
         socket.on('close', () =>{

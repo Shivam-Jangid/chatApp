@@ -1,6 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import toast from "react-hot-toast";
 import { create } from "zustand";
+import { useAuthStore } from "./useAuthstore";
 
 export interface userType {
     _id: string;
@@ -49,7 +50,8 @@ interface chatStoreProps {
         createdAt: string;
         updatedAt: string;
     }) => void;
-
+    subscribing: () => void;
+    unsubscribing: ()=> void;
     sendMessage: (text:messageData) => void;
 }
 
@@ -102,6 +104,27 @@ export const useChatStore = create<chatStoreProps>((set,get) => ({
             toast.error("Error occured while sending the message, wait and send later");
             console.log(err);
         }
-    }
+    },
+    subscribing: function(){
+        const {selectedUser} = get();
+        if(!selectedUser) return;
 
+        const socket = useAuthStore.getState().socket;
+
+        if(socket){
+            socket.onmessage = function(e){
+                const jsonParsed = JSON.parse(e.data);
+                if(jsonParsed.type == "message"){
+                    const newMessage = jsonParsed.message;
+                    set({messages: [...get().messages, newMessage]}) 
+                }
+            }
+        }
+    },
+    unsubscribing: function(){
+        // const socket = useAuthStore.getState().socket;
+        // if(socket){
+
+        // }
+    }
 }));

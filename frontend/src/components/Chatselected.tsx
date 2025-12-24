@@ -5,13 +5,16 @@ import ChatInput from "./ChatInput";
 import { useAuthStore } from "@/store/useAuthstore";
 
 export default function Chatselected() {
-  const { messages, getMessages, isMessagesLoading, selectedUser } =
+  const { messages, getMessages, isMessagesLoading,subscribing,unsubscribing, selectedUser } =
     useChatStore();
   const { authuser } = useAuthStore();
 
   useEffect(() => {
-    if (selectedUser && getMessages) getMessages(selectedUser._id);
-  }, [getMessages, selectedUser]);
+    if (selectedUser && getMessages)
+       getMessages(selectedUser._id);
+    subscribing();
+    return () => unsubscribing();
+  }, [getMessages, selectedUser,subscribing,unsubscribing]);
   
   if (isMessagesLoading) {
     return (

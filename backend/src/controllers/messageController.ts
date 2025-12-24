@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/userModel";
 import message from "../models/messageModel";
+import { idMap } from "../lib/ws";
 interface reqBody extends Request { 
     user?:any
 }
@@ -75,7 +76,15 @@ async function sendMessage (req:reqBody,res: Response) {
             receiverId,
             text
         });
-        res.status(200).json({message:'Message sent successfully', newMessage});    
+        const reciverSocket = idMap.get(receiverId);
+        if(reciverSocket){
+            const sendingJson = {
+                type:"message",
+                message:text
+            }
+            reciverSocket.send(JSON.stringify(sendingJson));
+        }
+        res.status(200).json({message:'Message sent successfully', newMessage});
     }
     catch(error){
         res.status(500).json({message: 'Internal server error at sendMessageController', error});
